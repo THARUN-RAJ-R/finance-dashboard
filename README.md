@@ -88,44 +88,53 @@ erDiagram
 
     users {
         uuid id PK
-        string email
-        string password_hash
-        string status
+        varchar email
+        varchar password_hash
+        varchar status
+        timestamptz created_at
+        timestamptz updated_at
     }
     
     roles {
         smallint id PK
-        string name
+        varchar name
     }
 
     user_roles {
-        uuid user_id FK
-        smallint role_id FK
+        uuid user_id PK,FK
+        smallint role_id PK,FK
     }
 
     categories {
         uuid id PK
-        string name
+        varchar name
+        timestamptz created_at
+        timestamptz deleted_at
     }
 
     financial_records {
         uuid id PK
         date record_date
-        string type
-        decimal amount
+        varchar type
         uuid category_id FK
+        numeric amount
+        varchar currency
+        text notes
         uuid created_by FK
+        timestamptz created_at
+        timestamptz updated_at
         timestamptz deleted_at
-        integer version
+        bigint version
     }
 
     audit_log {
         uuid id PK
         uuid actor_user_id FK
-        string action
-        string entity_type
+        varchar action
+        varchar entity_type
         uuid entity_id
         jsonb metadata
+        timestamptz created_at
     }
 ```
 
