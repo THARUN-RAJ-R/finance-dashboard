@@ -15,7 +15,7 @@ This project goes beyond basic CRUD to demonstrate "top 1%" backend engineering 
 *   **🚦 Distributed Rate Limiting**: Redis-backed protection for the login endpoint to stop brute-force attacks.
 *   **📜 Async Audit System**: A custom, non-blocking audit logger that tracks every change (Create/Update/Delete) in a separate transaction (`REQUIRES_NEW`).
 *   **💎 Idempotency Keys**: Support for `Idempotency-Key` headers on record creation to prevent duplicates during network retries.
-*   **🧪 High Test Coverage**: **123 Integration Tests** covering the full HTTP stack, security, and concurrency.
+*   **🧪 High Test Coverage**: **126 Integration Tests** covering the full HTTP stack, security, and concurrency.
 
 ---
 
