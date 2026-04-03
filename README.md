@@ -11,9 +11,9 @@ A Spring Boot 3.3.4 REST API built for high-performance financial data processin
 *   **JUnit 5** & **Testcontainers** (Integration testing)
 *   **OpenAPI 3.0** (Swagger/Redoc Documentation)
 
-## 🚀 "Senior Level" Features Implemented
+## 🚀 Core Features Implemented
 
-This project goes beyond basic CRUD to demonstrate "top 1%" backend engineering practices:
+This project is structured around solid backend engineering practices, focusing heavily on security, data integrity, and proper state management:
 
 *   **🛡️ Strict RBAC**: Method-level security using Spring Security 6.
 *   **🔄 Refresh Token Rotation**: Secure session management using Redis to prevent token theft replay.
