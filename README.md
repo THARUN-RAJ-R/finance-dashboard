@@ -35,61 +35,67 @@ graph TD
     subgraph Spring Boot Application
         API --> Filter[Security & Rate Limit Filter]
         Filter -->|Authenticates| Auth[JWT Auth Manager]
-        Filter --> Controller[Controllers]
+        Filter --> Controller[REST Controllers]
         Controller --> Services[Business Logic Services]
-        Services -->|Async Event| Audit[Audit Service]
+        Services --> Audit[Audit Service - Async]
+        Services --> Repos[Spring Data JPA Repositories]
     end
     
-    Auth .->|Checks/Stores Tokens| Redis[(Redis)]
-    Filter .->|Checks Rate Limits| Redis
-    Services .->|Cache Read/Write| Redis
+    Auth .->|Tokens| Redis[(Redis)]
+    Filter .->|Rate Limiting| Redis
+    Services .->|ETag / Cache| Redis
     
-    Services -->|JPA / Hibernate| DB[(PostgreSQL 16)]
-    Audit -->|New Transaction| DB
+    Repos -->|HikariCP| DB[(PostgreSQL 16)]
+    Audit -->|REQUIRES_NEW Transaction| DB
 ```
 
 ## 🗄️ Database Schema (ERD)
 
 ```mermaid
 erDiagram
-    USERS ||--o{ ROLES : has
-    USERS ||--o{ FINANCIAL_RECORDS : creates
-    CATEGORIES ||--o{ FINANCIAL_RECORDS : groups
-    FINANCIAL_RECORDS ||--o{ AUDIT_LOGS : triggers
+    users ||--o{ user_roles : "assigned"
+    roles ||--o{ user_roles : "grants"
+    users ||--o{ financial_records : "creates"
+    categories ||--o{ financial_records : "groups"
+    users ||--o{ audit_log : "triggers"
 
-    USERS {
+    users {
         uuid id PK
         string email
         string password_hash
         string status
-        timestamp created_at
+        timestamptz created_at
     }
     
-    CATEGORIES {
+    roles {
+        smallint id PK
+        string name
+    }
+
+    categories {
         uuid id PK
         string name
-        string type
-        boolean is_deleted
+        timestamptz created_at
     }
 
-    FINANCIAL_RECORDS {
+    financial_records {
         uuid id PK
+        date record_date
+        string type
         decimal amount
-        string type
-        timestamp record_date
-        uuid user_id FK
         uuid category_id FK
-        boolean is_deleted
+        uuid created_by FK
+        timestamptz deleted_at
+        integer version
     }
 
-    AUDIT_LOGS {
+    audit_log {
         uuid id PK
-        string entity_name
-        string entity_id
+        uuid actor_user_id FK
         string action
-        jsonb old_values
-        jsonb new_values
-        string changed_by
+        string entity_type
+        uuid entity_id
+        jsonb metadata
     }
 ```
 
