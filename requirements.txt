@@ -1,0 +1,7 @@
+# Finance Dashboard System Requirements
+# Note: This is a Java Spring Boot project. 
+# Library dependencies are managed by Maven in the pom.xml file.
+
+Java >= 17
+Maven >= 3.9.0
+Docker >= 24 (Required to run PostgreSQL and Redis containers)

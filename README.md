@@ -5,7 +5,7 @@ A Spring Boot 3.3.4 REST API built for high-performance financial data processin
 ---
 
 ## 💻 Tech Stack
-*   **Java 21** & **Spring Boot 3.3.4** (Web, Data JPA, Security, Validation)
+*   **Java 17** & **Spring Boot 3.3.4** (Web, Data JPA, Security, Validation)
 *   **PostgreSQL 16** (Primary Database, Flyway Migrations)
 *   **Redis 7** (Caching, distributed rate-limiting, and refresh-token storage)
 *   **JUnit 5** & **Testcontainers** (Integration testing)
