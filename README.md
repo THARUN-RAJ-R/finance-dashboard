@@ -45,33 +45,49 @@ Consistent with assessing technical reasoning, here are the core trade-offs made
 ## 🏗️ System Architecture
 
 ```mermaid
+---
+config:
+  theme: neo
+---
 flowchart TD
-    subgraph Client Layer
-        C[Client App / Postman]
+    classDef client fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px,color:#0D47A1;
+    classDef app fill:#E8F5E9,stroke:#43A047,stroke-width:2px,color:#1B5E20;
+    classDef infra fill:#FFF3E0,stroke:#FB8C00,stroke-width:2px,color:#E65100;
+    classDef redis fill:#FDECEA,stroke:#D32F2F,stroke-width:2px,color:#B71C1C;
+    classDef db fill:#EDE7F6,stroke:#5E35B1,stroke-width:2px,color:#311B92;
+    
+    subgraph CL[Client Layer]
+        C[📱 Client App / Postman]
+    end
+    subgraph SB[Spring Boot Application]
+        Filter[🛡️ Security & Rate Limit Filter]
+        Controllers[🎯 REST Controllers]
+        Services[🧠 Business Logic & Specs]
+        Audit[📜 Async Audit Engine]
+        Repos[📦 Spring Data JPA]
+    end
+    subgraph INF[Infrastructure]
+        Redis[(🔴 Redis Cache)]
+        DB[(🐘 PostgreSQL 16)]
     end
     
-    subgraph Spring Boot Application
-        Filter[Security & Rate Limit Filter]
-        Controllers[REST Controllers]
-        Services[Business Logic & Specs]
-        Audit[Async Audit Engine]
-        Repos[Spring Data JPA]
-    end
-    
-    subgraph Infrastructure
-        Redis[(Redis Cache)]
-        DB[(PostgreSQL 16)]
-    end
-
-    C -->|HTTPS| Filter
-    Filter -->|Validates JWT & Rate Limits| Redis
-    Filter --> Controllers
+    C -->|HTTPS APIs| Filter
+    Filter -->|Rate Limits & Refresh Tokens| Redis
+    Filter -->|Stateless Auth| Controllers
     Controllers --> Services
-    Services -->|ETag checks| Redis
-    Services -.->|Fires Async Event| Audit
+    Services -->|Dashboard Cache| Redis
+    Services -.->|Async Event| Audit
     Services --> Repos
-    Repos -->|HikariCP| DB
-    Audit -->|New Transaction| DB
+    Repos -->|HikariCP Connection Pool| DB
+    Audit -->|REQUIRES_NEW Transaction| DB
+    
+    class C client;
+    class Filter,Controllers,Services,Audit,Repos app;
+    class Redis redis;
+    class DB db;
+    style CL fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px
+    style SB fill:#E8F5E9,stroke:#43A047,stroke-width:2px
+    style INF fill:#FFF3E0,stroke:#FB8C00,stroke-width:2px
 ```
 
 ---
@@ -79,63 +95,44 @@ flowchart TD
 ## 🗄️ Database Schema 
 
 ```mermaid
-erDiagram
-    users ||--o{ user_roles : "assigned"
-    roles ||--o{ user_roles : "grants"
-    users ||--o{ financial_records : "creates"
-    categories ||--o{ financial_records : "groups"
-    users ||--o{ audit_log : "triggers"
+flowchart TD
 
-    users {
-        uuid id PK
-        varchar email
-        varchar password_hash
-        varchar status
-        timestamptz created_at
-        timestamptz updated_at
-    }
-    
-    roles {
-        smallint id PK
-        varchar name
-    }
+    %% 🎨 STYLE DEFINITIONS
+    classDef users fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px,color:#0D47A1;
+    classDef roles fill:#E8F5E9,stroke:#43A047,stroke-width:2px,color:#1B5E20;
+    classDef finance fill:#FFF3E0,stroke:#FB8C00,stroke-width:2px,color:#E65100;
+    classDef audit fill:#FDECEA,stroke:#D32F2F,stroke-width:2px,color:#B71C1C;
 
-    user_roles {
-        uuid user_id PK,FK
-        smallint role_id PK,FK
-    }
+    %% 👤 USERS
+    users["👤 USERS<br/>────────────<br/>id (PK)<br/>email (UNIQUE)<br/>password_hash<br/>status<br/>created_at<br/>updated_at"]
 
-    categories {
-        uuid id PK
-        varchar name
-        timestamptz created_at
-        timestamptz deleted_at
-    }
+    %% 🛡️ ROLES
+    roles["🛡️ ROLES<br/>────────────<br/>id (PK)<br/>name (UNIQUE)"]
 
-    financial_records {
-        uuid id PK
-        date record_date
-        varchar type
-        uuid category_id FK
-        numeric amount
-        varchar currency
-        text notes
-        uuid created_by FK
-        timestamptz created_at
-        timestamptz updated_at
-        timestamptz deleted_at
-        bigint version
-    }
+    %% 🔗 USER ROLES
+    user_roles["🔗 USER_ROLES<br/>────────────<br/>user_id (PK,FK)<br/>role_id (PK,FK)"]
 
-    audit_log {
-        uuid id PK
-        uuid actor_user_id FK
-        varchar action
-        varchar entity_type
-        uuid entity_id
-        jsonb metadata
-        timestamptz created_at
-    }
+    %% 🗂️ CATEGORIES
+    categories["🗂️ CATEGORIES<br/>────────────<br/>id (PK)<br/>name<br/>created_at<br/>deleted_at"]
+
+    %% 💰 FINANCIAL RECORDS
+    financial_records["💰 FINANCIAL_RECORDS<br/>────────────<br/>id (PK)<br/>record_date<br/>type (INCOME/EXPENSE)<br/>amount<br/>currency<br/>notes<br/>created_by (FK)<br/>category_id (FK)<br/>created_at<br/>updated_at<br/>deleted_at<br/>version"]
+
+    %% 📜 AUDIT LOG
+    audit_log["📜 AUDIT_LOG<br/>────────────<br/>id (PK)<br/>actor_user_id (FK)<br/>action<br/>entity_type<br/>entity_id<br/>metadata (JSONB)<br/>created_at"]
+
+    %% 🔗 RELATIONSHIPS
+    users -->|1 : N| user_roles
+    roles -->|1 : N| user_roles
+    users -->|1 : N| financial_records
+    categories -->|1 : N| financial_records
+    users -->|1 : N| audit_log
+
+    %% 🎨 APPLY COLORS
+    class users users;
+    class roles,user_roles roles;
+    class categories,financial_records finance;
+    class audit_log audit;
 ```
 
 ---
