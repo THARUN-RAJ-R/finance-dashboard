@@ -44,19 +44,30 @@ This project goes beyond basic CRUD to demonstrate "top 1%" backend engineering 
 
 ## 📋 API Documentation & Setup
 
+### 🌐 Live API Explorer
+**Interactive Documentation:** [https://tharun-raj-r.github.io/finance-dashboard/](https://tharun-raj-r.github.io/finance-dashboard/)
+
 ### 🏗️ Running Locally
 1. **Infrastructure**: `docker-compose up -d` (Starts PostgreSQL 16 & Redis 7).
 2. **Launch**: `mvn spring-boot:run`.
 3. **Swagger UI**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html).
 
-### 📖 API Reference (Quick Look)
-| Endpoint | Method | Role Required | Feature |
-|---|---|---|---|
-| `/api/v1/auth/login` | POST | Anonymous | Rate-limited login |
-| `/api/v1/dashboard/*` | GET | All Roles | Redis-cached summary/trends |
-| `/api/v1/records` | POST | ADMIN | Idempotent record creation |
-| `/api/v1/records` | GET | ADMIN/ANALYST | Filtered/Paged listing + CSV Export |
-| `/api/v1/audit` | GET | ADMIN | Full system audit trail |
+### 🔑 Default Test Credentials
+Use these pre-seeded accounts to test Role-Based Access Control (RBAC):
+*   **Admin**: `admin@finance.com` / `password` *(Full access)*
+*   **Analyst**: `analyst@finance.com` / `password` *(Can view records/trends)*
+*   **Viewer**: `viewer@finance.com` / `password` *(Read-only dashboard)*
+
+### 📖 Full API Endpoint Index
+
+| Resource | Endpoints | Roles Allowed |
+| :--- | :--- | :--- |
+| **Auth** | `POST /api/v1/auth/login`<br>`POST /api/v1/auth/refresh` | Anonymous |
+| **Users** | `POST /api/v1/users`<br>`GET /api/v1/users`<br>`PATCH /api/v1/users/{id}` | ADMIN |
+| **Categories** | `POST /api/v1/categories`<br>`GET /api/v1/categories`<br>`GET /api/v1/categories/{id}`<br>`PATCH /api/v1/categories/{id}`<br>`DELETE /api/v1/categories/{id}` | ADMIN / ALL (Read) |
+| **Records** | `POST /api/v1/records`<br>`POST /api/v1/records/bulk`<br>`GET /api/v1/records`<br>`GET /api/v1/records/{id}`<br>`PUT /api/v1/records/{id}`<br>`DELETE /api/v1/records/{id}` | ADMIN (Write) /<br>ANALYST (Read) |
+| **Dashboard** | `GET /api/v1/dashboard/summary`<br>`GET /api/v1/dashboard/category-totals`<br>`GET /api/v1/dashboard/trends` | ALL ROLES |
+| **Audit** | `GET /api/v1/audit` | ADMIN |
 
 ---
 
