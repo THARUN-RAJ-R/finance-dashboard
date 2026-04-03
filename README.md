@@ -63,11 +63,11 @@ Use these pre-seeded accounts to test Role-Based Access Control (RBAC):
 | Resource | Endpoints | Roles Allowed |
 | :--- | :--- | :--- |
 | **Auth** | `POST /api/v1/auth/login`<br>`POST /api/v1/auth/refresh` | Anonymous |
-| **Users** | `POST /api/v1/users`<br>`GET /api/v1/users`<br>`PATCH /api/v1/users/{id}` | ADMIN |
-| **Categories** | `POST /api/v1/categories`<br>`GET /api/v1/categories`<br>`GET /api/v1/categories/{id}`<br>`PATCH /api/v1/categories/{id}`<br>`DELETE /api/v1/categories/{id}` | ADMIN / ALL (Read) |
-| **Records** | `POST /api/v1/records`<br>`POST /api/v1/records/bulk`<br>`GET /api/v1/records`<br>`GET /api/v1/records/{id}`<br>`PUT /api/v1/records/{id}`<br>`DELETE /api/v1/records/{id}` | ADMIN (Write) /<br>ANALYST (Read) |
-| **Dashboard** | `GET /api/v1/dashboard/summary`<br>`GET /api/v1/dashboard/category-totals`<br>`GET /api/v1/dashboard/trends` | ALL ROLES |
-| **Audit** | `GET /api/v1/audit` | ADMIN |
+| **Users** | `GET /api/v1/users`<br>`POST /api/v1/users`<br>`GET /api/v1/users/{id}`<br>`PATCH /api/v1/users/{id}`<br>`GET /api/v1/users/me` | ADMIN (except `/me`) |
+| **Categories** | `GET /api/v1/categories`<br>`POST /api/v1/categories`<br>`GET /api/v1/categories/{id}`<br>`PUT /api/v1/categories/{id}`<br>`DELETE /api/v1/categories/{id}` | ADMIN (Write) /<br>ALL (Read) |
+| **Records** | `GET /api/v1/records`<br>`POST /api/v1/records`<br>`GET /api/v1/records/{id}`<br>`PUT /api/v1/records/{id}`<br>`DELETE /api/v1/records/{id}`<br>`POST /api/v1/records/bulk`<br>`GET /api/v1/records/export` | ADMIN (Write) /<br>ANALYST (Read) |
+| **Dashboard** | `GET /api/v1/dashboard/summary`<br>`GET /api/v1/dashboard/trends`<br>`GET /api/v1/dashboard/by-category`<br>`GET /api/v1/dashboard/recent-activity` | ALL ROLES |
+| **Audit** | `GET /api/v1/audit`<br>`GET /api/v1/audit/record/{recordId}`<br>`GET /api/v1/audit/entity/{entityType}` | ADMIN |
 
 ---
 
