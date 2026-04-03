@@ -1,0 +1,36 @@
+# === Maven build output ===
+target/
+*.class
+*.jar
+*.war
+
+# === Logs & temporary debug files ===
+*.log
+dashboard_failures.txt
+dashboard_npe.txt
+debug.log
+final_results.txt
+maven_output.txt
+test_error.log
+test_log*.txt
+test_output*.txt
+
+# === IDE ===
+.idea/
+*.iml
+.vscode/
+*.DS_Store
+
+# === Environment secrets — NEVER commit these ===
+.env
+.env.*
+application-local.yml
+application-secret.yml
+
+# === Docker volume data ===
+postgres-data/
+redis-data/
+
+# === Keep these ===
+!openapi.json
+!README.md
