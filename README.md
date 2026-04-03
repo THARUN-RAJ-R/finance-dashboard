@@ -10,13 +10,35 @@ A Spring Boot 3 REST API built for high-performance financial data processing, s
 ## 💻 Tech Stack
 *   **Java 17** | **Spring Boot 3.3.4** | **PostgreSQL 16** | **Redis 7** | **JUnit 5 / Testcontainers**
 
-## 🚀 Core Architectural Features
+## 🚀 Core Features
 
-*   **🛡️ Strict RBAC & Stateless Security**: Method-level security via Spring Security 6 with Redis-backed Refresh Token rotation.
+This codebase focuses on solid backend engineering practices, security, and data integrity:
+
+*   **🛡️ Strict RBAC**: Method-level security via Spring Security 6 with Redis-backed Refresh Token rotation.
 *   **⚡ Smart Caching & Rate Limiting**: Distributed Bucket4j rate limiting and HTTP 304 (ETag) caching using Redis.
 *   **🔐 Optimistic Locking & Soft Deletes**: `@Version` mapping to `If-Match` headers. Active partial-indexes for `deleted_at`.
 *   **📜 Async Audit System**: Non-blocking `REQUIRES_NEW` transactions track every mutation transparently.
-*   **💎 Idempotency & Data Filtering**: `Idempotency-Key` headers for safe retries, and dynamic JPA `Specification` queries.
+*   **💎 Idempotency & Filters**: `Idempotency-Key` headers for safe retries, and dynamic JPA `Specification` queries for advanced filtering.
+
+---
+
+## 🛠️ Engineering Decisions & Trade-offs
+
+Consistent with assessing technical reasoning, here are the core trade-offs made:
+
+**1. Data Precision (BigDecimal)**
+*   **Decision**: Used `BigDecimal(19,2)` for all monetary values instead of `double`/`float`.
+*   **Reasoning**: Prevents floating-point math rounding errors (e.g., `0.1 + 0.2 = 0.30000000000000004`).
+*   **Trade-off**: Higher memory overhead and slightly slower calculations, but guarantees 100% currency accuracy.
+
+**2. Stateless Auth + Redis Refresh Tokens**
+*   **Decision**: JWT for fast access; UUIDs stored in Redis for refresh tokens.
+*   **Reasoning**: Keeping refresh tokens in Redis allows for **instant revocation** (e.g., on logout or suspicious activity) without hitting the primary database.
+
+**3. Soft Delete Strategy**
+*   **Decision**: Financial records are never physically deleted; they are marked with a `deleted_at` timestamp.
+*   **Reasoning**: Preserves a full "paper trail" for audit and forensic purposes.
+*   **Trade-off**: The database grows larger over time. **Mitigation**: Implemented **Partial Indexes** (`WHERE deleted_at IS NULL`) so queries on active records remain lightning-fast.
 
 ---
 
@@ -51,6 +73,8 @@ flowchart TD
     Repos -->|HikariCP| DB
     Audit -->|New Transaction| DB
 ```
+
+---
 
 ## 🗄️ Database Schema 
 
@@ -121,5 +145,3 @@ erDiagram
 docker-compose up -d
 mvn spring-boot:run
 ```
-
-*Note: For the full list of endpoint routes, request schemas, and parameter filters, please refer directly to the Live API Explorer link above.*
