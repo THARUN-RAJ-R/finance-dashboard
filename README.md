@@ -1,6 +1,6 @@
 # 💰 Finance Dashboard Backend 📈
 
-A production-ready Spring Boot 3.3.4 REST API built for high-performance financial data processing, strict access control, and robust auditability.
+A Spring Boot 3.3.4 REST API built for high-performance financial data processing, strict access control, and robust auditability.
 
 ---
 
