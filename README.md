@@ -1,15 +1,5 @@
 # 💰 Finance Dashboard Backend
 
-> 🏆 **126 Integration Tests Passed (100% Success Rate).** 
-> *Fully tested across HTTP layers, Security, Concurrency, and Transactions using JUnit 5 & Testcontainers.*
-```text
-[INFO] Results:
-[INFO] 
-[INFO] Tests run: 126, Failures: 0, Errors: 0, Skipped: 0
-[INFO] 
-[INFO] BUILD SUCCESS
-```
-
 A Spring Boot 3 REST API built for high-performance financial data processing, strict access control, and robust auditability.
 
 ---
@@ -144,9 +134,22 @@ flowchart TD
 
 ---
 
-## 📋 API Documentation & Setup
+## 📋 API Documentation & Endpoints
 
 **Interactive Explorer:** [https://tharun-raj-r.github.io/finance-dashboard/](https://tharun-raj-r.github.io/finance-dashboard/)
+
+### 🔍 Core API Endpoints
+
+| Controller | Route | Methods | Roles Allowed |
+| :--- | :--- | :--- | :--- |
+| **Auth** | `/api/v1/auth/login` | POST | All |
+| **Auth** | `/api/v1/auth/refresh` | POST | All |
+| **Users** | `/api/v1/users/**` | GET, POST, PATCH | ADMIN |
+| **Categories** | `/api/v1/categories/**` | GET, POST, PUT, DELETE | ADMIN (Read: All) |
+| **Records** | `/api/v1/records/**` | GET, POST, PUT, DELETE | ADMIN, ANALYST |
+| **Dashboard** | `/api/v1/dashboard/summary` | GET | All |
+| **Dashboard** | `/api/v1/dashboard/trends` | GET | All |
+| **Audit** | `/api/v1/audit/**` | GET | ADMIN |
 
 ### 🔑 Test Credentials (RBAC)
 *   **Admin**: `admin@finance.com` / `password` *(Full access)*
@@ -161,18 +164,22 @@ mvn spring-boot:run
 
 ---
 
-<details>
-<summary><b>🔍 View Full API Endpoints Summary</b></summary>
+## 🏆 Test Coverage Highlights
 
-| Controller | Route | Methods | Roles Allowed |
-| :--- | :--- | :--- | :--- |
-| **Auth** | `/api/v1/auth/login` | POST | All |
-| **Auth** | `/api/v1/auth/refresh` | POST | All |
-| **Users** | `/api/v1/users/**` | GET, POST, PATCH | ADMIN |
-| **Categories** | `/api/v1/categories/**` | GET, POST, PUT, DELETE | ADMIN (Read: All) |
-| **Records** | `/api/v1/records/**` | GET, POST, PUT, DELETE | ADMIN, ANALYST |
-| **Dashboard** | `/api/v1/dashboard/summary` | GET | All |
-| **Dashboard** | `/api/v1/dashboard/trends` | GET | All |
-| **Audit** | `/api/v1/audit/**` | GET | ADMIN |
+> **126 Integration Tests Passed (100% Success Rate).** 
+> *Fully tested across HTTP layers, Security, Concurrency, and Transactions using JUnit 5 & Testcontainers.*
 
-</details>
+```text
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.finance.dashboard.RecordIntegrationTest
+[INFO] ...
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 126, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] -------------------------------------------------------
+```
