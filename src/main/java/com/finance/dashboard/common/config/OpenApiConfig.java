@@ -49,9 +49,9 @@ public class OpenApiConfig {
                                 ### Demo Credentials
                                 | Email | Password | Role |
                                 |-------|----------|------|
-                                | admin@local | admin123 | ADMIN |
-                                | analyst@local | analyst123 | ANALYST |
-                                | viewer@local | viewer123 | VIEWER |
+                                | admin@finance.com | password | ADMIN |
+                                | analyst@finance.com | password | ANALYST |
+                                | viewer@finance.com | password | VIEWER |
                                 """))
                 .servers(List.of(
                         new Server().url("https://finance-dashboard-qtpi.onrender.com")

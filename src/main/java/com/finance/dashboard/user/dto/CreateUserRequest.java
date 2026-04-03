@@ -29,6 +29,6 @@ public class CreateUserRequest {
     private String password;
 
     @NotEmpty(message = "At least one role is required")
-    @Schema(description = "Set of roles to assign (VIEWER, ANALYST, ADMIN)", example = "[\"ROLE_ANALYST\"]")
+    @Schema(description = "Set of roles to assign (VIEWER, ANALYST, ADMIN)", example = "[\"ANALYST\"]")
     private Set<RoleName> roles;
 }
