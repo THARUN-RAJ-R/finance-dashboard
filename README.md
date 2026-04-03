@@ -73,46 +73,7 @@ This codebase focuses on solid backend engineering practices, security, and data
 
 ## 🗄️ Database Schema 
 
-```mermaid
-flowchart TD
-
-    %% 🎨 STYLE DEFINITIONS
-    classDef users fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px,color:#0D47A1;
-    classDef roles fill:#E8F5E9,stroke:#43A047,stroke-width:2px,color:#1B5E20;
-    classDef finance fill:#FFF3E0,stroke:#FB8C00,stroke-width:2px,color:#E65100;
-    classDef audit fill:#FDECEA,stroke:#D32F2F,stroke-width:2px,color:#B71C1C;
-
-    %% 👤 USERS
-    users["👤 USERS<br/>────────────<br/>id (PK)<br/>email (UNIQUE)<br/>password_hash<br/>status<br/>created_at<br/>updated_at"]
-
-    %% 🛡️ ROLES
-    roles["🛡️ ROLES<br/>────────────<br/>id (PK)<br/>name (UNIQUE)"]
-
-    %% 🔗 USER ROLES
-    user_roles["🔗 USER_ROLES<br/>────────────<br/>user_id (PK,FK)<br/>role_id (PK,FK)"]
-
-    %% 🗂️ CATEGORIES
-    categories["🗂️ CATEGORIES<br/>────────────<br/>id (PK)<br/>name<br/>created_at<br/>deleted_at"]
-
-    %% 💰 FINANCIAL RECORDS
-    financial_records["💰 FINANCIAL_RECORDS<br/>────────────<br/>id (PK)<br/>record_date<br/>type (INCOME/EXPENSE)<br/>amount<br/>currency<br/>notes<br/>created_by (FK)<br/>category_id (FK)<br/>created_at<br/>updated_at<br/>deleted_at<br/>version"]
-
-    %% 📜 AUDIT LOG
-    audit_log["📜 AUDIT_LOG<br/>────────────<br/>id (PK)<br/>actor_user_id (FK)<br/>action<br/>entity_type<br/>entity_id<br/>metadata (JSONB)<br/>created_at"]
-
-    %% 🔗 RELATIONSHIPS
-    users -->|1 : N| user_roles
-    roles -->|1 : N| user_roles
-    users -->|1 : N| financial_records
-    categories -->|1 : N| financial_records
-    users -->|1 : N| audit_log
-
-    %% 🎨 APPLY COLORS
-    class users users;
-    class roles,user_roles roles;
-    class categories,financial_records finance;
-    class audit_log audit;
-```
+![Database Schema Explicit ERD](./assets/erd.png)
 
 ---
 
