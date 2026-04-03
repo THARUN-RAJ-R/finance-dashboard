@@ -72,13 +72,16 @@ Use these pre-seeded accounts to test Role-Based Access Control (RBAC):
 ---
 
 ## 🧪 Verification & Testing
-The project includes a comprehensive test suite of **123 tests**.
+The project includes a comprehensive test suite of **126 tests** with 100% passing rate.
 ```bash
 mvn clean test
 ```
-*   **`AuditIntegrationTest`**: Verifies that every change is tracked.
-*   **`AuthIntegrationTest`**: Tests JWT rotation, rate limiting, and RBAC.
-*   **`RecordIntegrationTest`**: Tests concurrency, soft-deletes, and idempotency.
+*   **`AuditIntegrationTest`**: Verifies that every single Create/Update/Delete action is tracked asynchronously in a new transaction.
+*   **`AuthIntegrationTest`**: Tests JWT refresh token rotation, strict password policies, rate limiting (Redis), and RBAC limits.
+*   **`RecordIntegrationTest`**: Tests massive data filtering, Idempotency-Key handling, Optimistic Locking (`@Version`), and Soft Deletes.
+*   **`CategoryIntegrationTest`**: Tests category CRUD, soft-deletion boundaries, and referential integrity (prevents deleting active categories).
+*   **`DashboardIntegrationTest`**: Tests time-series aggregations, caching integration (Redis), and ETags mapping.
+*   **`UserIntegrationTest`**: Verifies Admin user management boundaries, email collision safeguards, and custom profile queries.
 
 ---
 
