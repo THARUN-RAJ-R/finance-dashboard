@@ -4,6 +4,13 @@ A Spring Boot 3.3.4 REST API built for high-performance financial data processin
 
 ---
 
+## 💻 Tech Stack
+*   **Java 21** & **Spring Boot 3.3.4** (Web, Data JPA, Security, Validation)
+*   **PostgreSQL 16** (Primary Database, Flyway Migrations)
+*   **Redis 7** (Caching, distributed rate-limiting, and refresh-token storage)
+*   **JUnit 5** & **Testcontainers** (Integration testing)
+*   **OpenAPI 3.0** (Swagger/Redoc Documentation)
+
 ## 🚀 "Senior Level" Features Implemented
 
 This project goes beyond basic CRUD to demonstrate "top 1%" backend engineering practices:
@@ -18,6 +25,73 @@ This project goes beyond basic CRUD to demonstrate "top 1%" backend engineering 
 *   **🧪 High Test Coverage**: **126 Integration Tests** covering the full HTTP stack, security, and concurrency.
 
 ---
+
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    Client[Client App / Postman] -->|HTTPS Requests| API[Spring Boot REST API]
+    
+    subgraph Spring Boot Application
+        API --> Filter[Security & Rate Limit Filter]
+        Filter -->|Authenticates| Auth[JWT Auth Manager]
+        Filter --> Controller[Controllers]
+        Controller --> Services[Business Logic Services]
+        Services -->|Async Event| Audit[Audit Service]
+    end
+    
+    Auth .->|Checks/Stores Tokens| Redis[(Redis)]
+    Filter .->|Checks Rate Limits| Redis
+    Services .->|Cache Read/Write| Redis
+    
+    Services -->|JPA / Hibernate| DB[(PostgreSQL 16)]
+    Audit -->|New Transaction| DB
+```
+
+## 🗄️ Database Schema (ERD)
+
+```mermaid
+erDiagram
+    USERS ||--o{ ROLES : has
+    USERS ||--o{ FINANCIAL_RECORDS : creates
+    CATEGORIES ||--o{ FINANCIAL_RECORDS : groups
+    FINANCIAL_RECORDS ||--o{ AUDIT_LOGS : triggers
+
+    USERS {
+        uuid id PK
+        string email
+        string password_hash
+        string status
+        timestamp created_at
+    }
+    
+    CATEGORIES {
+        uuid id PK
+        string name
+        string type
+        boolean is_deleted
+    }
+
+    FINANCIAL_RECORDS {
+        uuid id PK
+        decimal amount
+        string type
+        timestamp record_date
+        uuid user_id FK
+        uuid category_id FK
+        boolean is_deleted
+    }
+
+    AUDIT_LOGS {
+        uuid id PK
+        string entity_name
+        string entity_id
+        string action
+        jsonb old_values
+        jsonb new_values
+        string changed_by
+    }
+```
 
 ## 🛠️ Technical Decisions & Trade-offs
 
@@ -89,3 +163,11 @@ mvn clean test
 1. **Single Currency**: All calculations assume a primary currency (e.g., USD) as the system doesn't currently handle real-time exchange rate conversions.
 2. **Email as ID**: Emails are unique and used as the primary identifier for login.
 3. **Timezones**: All timestamps are stored and handled in **UTC**.
+
+---
+
+## 🔮 Future Roadmap
+If given more time, I would expand the system with the following:
+1.  **Event-Driven Audit logging**: Move the Audit logging from `@Async` to an event broker like **Apache Kafka** or RabbitMQ to decouple the database load entirely.
+2.  **System Observability**: Implement the **ELK Stack** (Elasticsearch, Logstash, Kibana) for centralized logging, and Prometheus/Grafana via Micrometer for JVM metrics.
+3.  **CI/CD Pipeline**: Add GitHub Actions to automatically run the `Testcontainers` test suite on every pull request and build a Docker image upon push to `main`.
