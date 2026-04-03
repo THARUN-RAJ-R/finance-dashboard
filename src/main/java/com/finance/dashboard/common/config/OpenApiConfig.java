@@ -54,6 +54,8 @@ public class OpenApiConfig {
                                 | viewer@local | viewer123 | VIEWER |
                                 """))
                 .servers(List.of(
+                        new Server().url("https://finance-dashboard-qtpi.onrender.com")
+                                   .description("Production (Render)"),
                         new Server().url("http://localhost:" + serverPort)
                                    .description("Local development")))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
