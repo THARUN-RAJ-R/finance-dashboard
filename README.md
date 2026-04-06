@@ -136,7 +136,7 @@ mvn clean test
 
 ## 📋 Comprehensive API Endpoints
 
-**Interactive Explorer:** [https://tharun-raj-r.github.io/finance-dashboard/](https://tharun-raj-r.github.io/finance-dashboard/)
+**Interactive Explorer:**[ [https://tharun-raj-r.github.io/finance-dashboard/](https://tharun-raj-r.github.io/finance-dashboard/)](https://finance-dashboard-qtpi.onrender.com/)
 
 ### 🔐 Auth
 | Method | Endpoint | Description | Roles |
